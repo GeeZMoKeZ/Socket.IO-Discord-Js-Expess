@@ -1,0 +1,43 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <form action="">
+        <select name="channel" id="selecteur-channel">
+        </select>
+        <textarea name="message" id="message" cols="30" rows="10"></textarea>
+        <input type="submit" value="Envoyer">
+    </form>
+    <div id="messages-history"></div>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script>
+        $(function () {
+            var socket = io();
+            $("form").submit(function(e){
+                e.preventDefault();
+                to_pass = {};
+                to_pass.message = $("#message").val();
+                to_pass.channel = $("#selecteur-channel").val();
+                console.log(to_pass);
+                socket.emit("message", to_pass);
+                return;
+            })
+            socket.on("loadChannels", function (to_pass){
+                console.log(to_pass);
+                to_pass.forEach(e => {
+                    console.log(e.nom);
+                    $("#selecteur-channel").append(`<option value=${e.id}>${e.nom}</option>`)
+                });
+            })
+        })
+    </script>
+</body>
+
+</html>
